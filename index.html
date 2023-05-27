@@ -1,0 +1,99 @@
+<!-- <!DOCTYPE html>
+<html>
+
+<head>
+    <title>Video Stream and Screen Record</title>
+    <style>
+        .video-container {
+            display: inline-block;
+            margin-right: 50px;
+        }
+
+        .screen-container {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Video Stream and Screen Record</h1>
+
+    <div class="video-container">
+        <h2>Video Stream</h2>
+        <img src="{{ url_for('video_feed') }}" width="640" height="480">
+    </div>
+
+    <div class="screen-container">
+        <h2>Screen Record</h2>
+        <img src="{{ url_for('screen_feed') }}" width="640" height="480">
+    </div>
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Video Stream and Screen Record</title>
+    <style>
+        .video-container {
+            display: inline-block;
+            margin-right: 50px;
+        }
+
+        .screen-container {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Video Stream and Screen Record</h1>
+
+    <div class="video-container">
+        <h2>Video Stream</h2>
+        <video id="video-stream" autoplay></video>
+    </div>
+
+    <div class="screen-container">
+        <h2>Screen Record</h2>
+        <video id="screen-record" autoplay></video>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+    <script>
+        const video = document.getElementById('video-stream');
+        const screen = document.getElementById('screen-record');
+
+        const socket = io();
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+
+        socket.on('video_frame', (data) => {
+            const blob = b64toBlob(data);
+            const url = URL.createObjectURL(blob);
+            video.src = url;
+        });
+
+        socket.on('screen_frame', (data) => {
+            const blob = b64toBlob(data);
+            const url = URL.createObjectURL(blob);
+            screen.src = url;
+        });
+
+        function b64toBlob(data) {
+            const byteString = atob(data);
+            const arrayBuffer = new ArrayBuffer(byteString.length);
+            const uint8Array = new Uint8Array(arrayBuffer);
+            for (let i = 0; i < byteString.length; i++) {
+                uint8Array[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([uint8Array], { type: 'image/jpeg' });
+        }
+    </script>
+</body>
+
+</html>
